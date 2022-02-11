@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/guitareric/S2-automake-account/issues"
   },
-  "homepage": "https://github.com/guitareric/S2-automake-account#readme"
+  "homepage": "https://github.com/guitareric/S2-automake-account#readme",
+  "dependencies": {
+    "prettier": "^2.5.1"
+  }
 }
