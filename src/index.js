@@ -2,80 +2,65 @@ const puppeteer = require('puppeteer')
 const fs = require('fs')
 
 ;(async () => {
-  const browser = await puppeteer.launch({ headless: false, ignoreHTTPSErrors: true, args: ['--ignore-certificate-errors', '--enable-feature=NetworkService'] })
+  const users = [
+    { name: 'Fake Name1', prox: '111111' },
+    { name: 'Fake Name2', prox: '111111' },
+  ]
+  const browser = await puppeteer.launch({ slowMo: 150, headless: false, ignoreHTTPSErrors: true, args: ['--ignore-certificate-errors', '--enable-feature=NetworkService'] })
   const page = await browser.newPage()
-  //   const context = browser.defaultBrowserContext()
-  //   context.overridePermissions('https://www.facebook.com/?sk=h_chr', ['geolocation', 'notifications'])
-  //   const cookiesPath = 'cookies.txt'
-  //   const content = fs.readFileSync(cookiesPath)
-  //   const cookiesArr = JSON.parse(content)
-  //   for (let cookie of cookiesArr) {
-  //     await page.setCookie(cookie)
-  //   }
+
+  await page.setViewport({ width: 800, height: 600 })
+
   console.log('Session has been loaded in the browser')
-  //   await page.goto('https://google.com')
 
   await page.goto('https://155.98.92.189/frameset/')
   console.log('Logging in...')
-  //   await browser.close()
+  await page.waitForSelector('#username')
+  await page.type('#username', 'ericf')
+  await page.type('#password', 'Amelia_jane1')
+  await page.keyboard.press('Enter')
+  console.log('login successful')
+  await page.waitForTimeout(1000)
+  await page.mouse.click(77.35417175292969, 3, { button: 'left' })
+  console.log('admin panel clicked')
 
-  //   await page.type('#email', process.env['FB_LOGIN'])
-  //   await page.type('#pass', process.env['FB_PASSWORD'])
-  //   await page.click('[name="login"]')
-  //   await page.waitForNavigation()
-  //   // Write Cookies
-  //   const cookiesObject = await page.cookies()
-  //   fs.writeFileSync(cookiesPath, JSON.stringify(cookiesObject))
-  //   console.log('Session has been saved to ' + cookiesPath)
+  await page.waitForTimeout(500)
+  await page.mouse.click(20, 280.6666717529297, { button: 'left' })
+  console.log('add people clicked')
+  await page.waitForTimeout(8000)
+  await page.mouse.move(400, 400)
+  await page.mouse.click(20, 280.6666717529297, { button: 'left' })
+  await page.waitForTimeout(1000)
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(500)
+  await page.keyboard.type('lastname')
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(500)
+  await page.keyboard.type('firstname')
+  await page.waitForTimeout(500)
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(500)
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(500)
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(500)
+  await page.keyboard.press('Tab')
+  await page.keyboard.type('03/22/2023 00:00')
+  await page.keyboard.press('Tab')
+  await page.waitForTimeout(100000)
 
-  //   console.log('Checking for new posts...')
-  //   await page.goto('https://www.facebook.com/?sk=h_chr')
-  //   const selector = '[aria-posinset="1"]'
-  //   await page.waitForSelector(selector)
-  //   var postHandle = await page.$(selector)
-  //   currentPost = await postHandle.evaluate(el => el.innerText)
-  //   // console.log(currentPost) // this will help for debugging to see the whole string that is returned
-  //   currentPoster = parsePoster(currentPost)
-  //   currentPost = parseComment(currentPost)
-  //   if (previousPost == currentPost) {
-  //     console.log('No new posts, refreshing in 60 seconds...')
-  //     await page.waitForTimeout(60000)
-  //   } else {
-  //     console.log(`New poster ${currentPoster} said:\n ${currentPost}`)
-  //     console.log('New post found! Checking for keywords...')
-  //     if (
-  //       currentPost.toLowerCase().includes('loan officer') ||
-  //       currentPost.toLowerCase().includes('refinance') ||
-  //       currentPost.toLowerCase().includes('mortgage') ||
-  //       currentPost.toLowerCase().includes('mortgage rates') ||
-  //       currentPost.toLowerCase().includes('sell house') ||
-  //       currentPost.toLowerCase().includes('sell home') ||
-  //       currentPost.toLowerCase().includes('buy house') ||
-  //       currentPost.toLowerCase().includes('buy home') ||
-  //       currentPost.toLowerCase().includes('home loan') ||
-  //       currentPost.toLowerCase().includes('brokerage') ||
-  //       currentPost.toLowerCase().includes('broker') ||
-  //       currentPost.toLowerCase().includes('realitor') ||
-  //       currentPost.toLowerCase().includes('realtor') ||
-  //       currentPost.toLowerCase().includes('realiter') ||
-  //       currentPost.toLowerCase().includes('realter')
-  //     ) {
-  //       console.log('Match found! Leaving comment and sending Email notification...')
-  //       await autoScroll(page)
-  //       await page.click('[aria-label="Leave a comment"]')
-  //       await page.waitForSelector('[aria-label="Write a comment"]')
-  //       const reply = 'My brother has been doing real estate and loans for over 10 years. He will be able to get you the best rates and the best deals. Contact @Blake Fluckiger or text/call him at 801-652-5478'
-  //       await page.click('[aria-label="Write a comment"]')
-  //       await page.type('[aria-label="Write a comment"]', reply)
-  //       await page.keyboard.press('Enter')
-  //       mailer(currentPost, currentPoster, reply)
-  //       console.log('Comment and Email notification sent, refreshing in 60 seconds...')
-  //       await page.waitForTimeout(5000)
-  //     } else {
-  //       console.log('No match found, refreshing in 60 seconds...')
-  //       await page.waitForTimeout(60000)
-  //     }
-  //   }
-  //   previousPost = currentPost
-  //   previousPoster = currentPoster
+  await page.click('#tab-credentialtab')
+
+  await page.waitForSelector('#addcredential')
+  await page.click('#addcredential')
+
+  await page.waitForSelector('#encodednumber0')
+  await page.type('#encodednumber0', '123456')
+
+  await page.click('#tab-accesstab')
+  await page.waitForSelector('#\\36 0 > td:nth-child(3)')
+  await page.click('#\\36 0 > td:nth-child(3)')
+  await page.click('#uparrow')
+  await page.waitForTimeout(500)
+  await page.click('#save')
 })()
