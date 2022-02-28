@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/guitareric/S2-automake-account#readme",
   "dependencies": {
-    "prettier": "^2.5.1"
+    "fs": "^0.0.1-security",
+    "prettier": "^2.5.1",
+    "puppeteer": "^13.3.1"
   }
 }
