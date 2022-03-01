@@ -6,7 +6,7 @@ const fs = require('fs')
     { name: 'Fake Name1', prox: '111111' },
     { name: 'Fake Name2', prox: '111111' },
   ]
-  const browser = await puppeteer.launch({ slowMo: 150, headless: false, ignoreHTTPSErrors: true, args: ['--ignore-certificate-errors', '--enable-feature=NetworkService'] })
+  const browser = await puppeteer.launch({ headless: false, ignoreHTTPSErrors: true, args: ['--ignore-certificate-errors', '--enable-feature=NetworkService'] })
   const page = await browser.newPage()
 
   await page.setViewport({ width: 800, height: 600 })
@@ -47,8 +47,9 @@ const fs = require('fs')
   await page.keyboard.press('Tab')
   await page.keyboard.type('03/22/2023 00:00')
   await page.keyboard.press('Tab')
-  await page.waitForTimeout(100000)
-
+  await page.keyboard.press('Tab')
+  await page.keyboard.press('Tab')
+  await page.waitForSelector('#tab-credentialtab')
   await page.click('#tab-credentialtab')
 
   await page.waitForSelector('#addcredential')
