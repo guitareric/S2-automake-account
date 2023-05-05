@@ -48,7 +48,7 @@ const csv = require('csvtojson') // Make sure you have this line in order to cal
     await frame.type('#firstname', user.firstName)
     console.log('first name added')
     await frame.waitForSelector('#expirationdate_date')
-    await frame.type('#expirationdate_date', '12/9/2023 00:00', { delay: 100 })
+    await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
     console.log('expiration date added')
     await frame.click('#tab-credentialtab')
     await frame.waitForSelector('#addcredential')
@@ -57,10 +57,26 @@ const csv = require('csvtojson') // Make sure you have this line in order to cal
     await frame.type('#encodednumber0', user.prox)
     await frame.click('#tab-accesstab')
     console.log('access tab clicked')
-    await frame.waitForSelector('#\\36 1 > td:nth-child(3)')
-    await frame.click('#\\36 1 > td:nth-child(3)')
+    // backend lab
+    await frame.waitForSelector('#\\35 9 > td:nth-child(3)')
+    await frame.click('#\\35 9 > td:nth-child(3)')
+    // clean conference room
+    await frame.waitForSelector('#\\36 2 > td:nth-child(3)')
+    await frame.click('#\\36 2 > td:nth-child(3)')
+    // cleanroom day only
+    await frame.waitForSelector('#\\36 4 > td:nth-child(3)')
+    await frame.click('#\\36 4 > td:nth-child(3)')
+    // cleanroom exit
     await frame.waitForSelector('#\\37 7 > td:nth-child(3)')
     await frame.click('#\\37 7 > td:nth-child(3)')
+    // prototyping lab
+    await frame.waitForSelector('#\\37 0 > td:nth-child(3)')
+    await frame.click('#\\37 0 > td:nth-child(3)')
+    // Studen Lab Access
+    // await frame.waitForSelector('#\\36 1 > td:nth-child(3)')
+    // await frame.click('#\\36 1 > td:nth-child(3)')
+    // await frame.waitForSelector('#\\37 7 > td:nth-child(3)')
+    // await frame.click('#\\37 7 > td:nth-child(3)')
     await page.waitForTimeout(300)
     await frame.click('#uparrow')
     await page.waitForTimeout(500)
