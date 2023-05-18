@@ -1,4 +1,6 @@
-firstName,lastName,prox
-Prashanna ,Poudel,480601
-Paul,Bailey,457364
-Cordelia,Latham,517667
+Member Type,First Name,Last Name,Project,Prox Code,Email,Process Review,Orientation,Picture,Safety Test Passed with 100%,Badge Printed and S2 Set
+Student Lab to New Member,first4,last4,project4,111123,email1@yahoo.com,4/21/23,4/22/23,,5/23/23,
+Staff,first3,last3,project3,111234,email1@yahoo.com,4/20/23,4/21/23,,5/23/2333,
+New Member,first2,last2,project2,112345,email1@yahoo.com,4/19/23,4/20/23,,5/23/33,
+Student Lab,first1,last1,project1,123456,email1@yahoo.com,4/18/23,4/19/23,,5/23/23,
+,,,,,,,,,,THIS IS THE BADGE MAKING COLUMN. COPY AND PASTE USER INFORMATION INTO THIS COLUMN AND IT WILL POPULATE THE BADGE SPREADSHEET SO THAT YOU CAN PRINT IT WITH THE EVOLIS PRINTER IN THE NANOFAB LOBBY
