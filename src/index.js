@@ -16,10 +16,11 @@ const csv = require('csvtojson') // Make sure you have this line in order to cal
     headless: false,
     ignoreHTTPSErrors: true,
     slowMo: 40,
-    args: ['--window-size=1400,900', '--disable-gpu', '--disable-features=IsolateOrigins,site-per-process', '--blink-settings=imagesEnabled=true'],
+    args: ['--window-size=800,600', '--disable-gpu', '--disable-features=IsolateOrigins,site-per-process', '--blink-settings=imagesEnabled=true'],
   })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
+  const yOffset = -17
 
   // Make S2 account
 
@@ -30,56 +31,77 @@ const csv = require('csvtojson') // Make sure you have this line in order to cal
   await page.type('#password', 'Amelia_jane1')
   await page.keyboard.press('Enter')
   console.log('login successful')
-  await page.waitForTimeout(1000)
+  await page.waitForTimeout(6000)
 
   // begin loop and initialize variables
-  let elementHandle
-  let frame
-  for (const user of users) {
-    elementHandle = await page.waitForSelector('#mainFrame')
-    frame = await elementHandle.contentFrame()
-    await page.waitForTimeout(1000)
+  var elementHandle = await page.waitForSelector('#mainFrame')
+  var frame = await elementHandle.contentFrame()
+  elementHandle = await frame.waitForSelector('#innerPageFrame')
+  frame = await elementHandle.contentFrame()
+  await page.waitForTimeout(3000)
 
+  for (const user of users) {
     // check to see if student to member
     // Student Lab Access
     if (user['Member Type'] === 'Student Lab to New Member') {
-      // delete student
-      console.log('deleting student')
-      await frame.waitForSelector('#topbaradmin')
-      await frame.click('#topbaradmin')
-      await frame.waitForSelector('#PplSearch')
-      await frame.click('#PplSearch')
-      await page.waitForTimeout(3000)
-      // elementHandle = await frame.waitForSelector('#innerPageFrame')
-      // frame = await elementHandle.contentFrame()
-      await frame.waitForSelector('#el-collapse-content-7534 > div > div:nth-child(1) > div:nth-child(2) > div > div > div.el-input > input')
-      await frame.type('#el-collapse-content-7534 > div > div:nth-child(1) > div:nth-child(2) > div > div > div.el-input > input', user['First Name'])
-      await frame.waitForSelector('#el-collapse-content-7534 > div > div:nth-child(1) > div:nth-child(1) > div > div > div.el-input > input')
-      await frame.type('#el-collapse-content-7534 > div > div:nth-child(1) > div:nth-child(1) > div > div > div.el-input > input', user['Last Name'])
+      // click admin
+      await page.mouse.click(90, 17, { button: 'left' })
+      await page.waitForTimeout(1000)
+      // click pplsearch
+      await page.mouse.click(142, 304, { button: 'left' })
+      await page.waitForTimeout(2000)
+      // get page focus
+      await page.mouse.click(566, 116, { button: 'left' })
+      await page.waitForTimeout(1000)
+      // scroll down
+      await page.mouse.wheel({ deltaY: 200 })
+      console.log('scrolling')
+      await page.waitForTimeout(1000)
+      // click Last Name field
+      await page.mouse.click(692, 352 + yOffset, { button: 'left' })
+      await page.waitForTimeout(2000)
+      await page.keyboard.type(user['Last Name'])
+      // scroll right
+      await page.mouse.wheel({ deltaX: 300 })
+      await page.mouse.click(692, 352 + yOffset, { button: 'left' })
+      await page.waitForTimeout(1000)
+      await page.keyboard.type(user['First Name'])
       // click search
-      await frame.click('#app > form > div.flex.h100 > div:nth-child(2) > div > div:nth-child(1) > footer > div > div.el-col.el-col-10 > button:nth-child(4) > span')
-      // select student
-      await frame.click(
-        '#personsearch > div.ag-theme-balham > div > div.ag-root-wrapper-body.ag-layout-normal > div > div.ag-body.ag-layout-normal.ag-row-animation > div.ag-body-viewport-wrapper.ag-layout-normal > div > div > div > div:nth-child(1) > span > div.pointer'
-      )
-
+      await page.keyboard.press('Enter')
+      await page.waitForTimeout(3000)
+      // click on user
+      await page.mouse.click(283, 210 + yOffset, { button: 'left' })
+      await page.waitForTimeout(3200)
+      // delete user
+      await frame.waitForSelector('#delete')
       await frame.click('#delete')
+      await page.waitForTimeout(2000)
+      // click confirm
+      await page.mouse.click(645, 109 + yOffset, { button: 'left' })
+      await page.waitForTimeout(1000)
       console.log('student deleted')
     }
+    await page.goto('https://155.98.92.189/frameset/')
+    await page.waitForTimeout(3000)
+    elementHandle = await page.waitForSelector('#mainFrame')
+    frame = await elementHandle.contentFrame()
     await frame.waitForSelector('#topbaradmin')
     await frame.click('#topbaradmin')
     await frame.waitForSelector('#PplAdd')
     await frame.click('#PplAdd')
-    await page.waitForTimeout(5000)
+    await page.waitForTimeout(2000)
     elementHandle = await frame.waitForSelector('#innerPageFrame')
+    await page.waitForTimeout(1000)
     frame = await elementHandle.contentFrame()
+    await page.waitForTimeout(1000)
     await frame.waitForSelector('#lastname')
-    await frame.click('#lastname')
     await frame.type('#lastname', user['Last Name'])
     await frame.type('#firstname', user['First Name'])
     console.log('first name added')
     await frame.waitForSelector('#expirationdate_date')
     await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
+    await page.keyboard.press('Enter')
+    await page.waitForTimeout(3000)
     console.log('expiration date added')
     await frame.click('#tab-credentialtab')
     await frame.waitForSelector('#addcredential')
@@ -175,7 +197,7 @@ const csv = require('csvtojson') // Make sure you have this line in order to cal
 
     await page.type(
       'body > div.bp4-portal > div > div.bp4-popover2-transition-container.bp4-overlay-content.bp4-popover2-appear-done.bp4-popover2-enter-done > div > div.bp4-popover2-content > div > div:nth-child(2) > div.bp4-input-group.bp4-fill > input',
-      user.firstName + ' ' + user.lastName
+      user['First Name'] + ' ' + user['Last Name']
     )
 
     await page.waitForSelector(
