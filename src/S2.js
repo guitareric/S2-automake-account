@@ -14,7 +14,7 @@ async function S2() {
   const browser = await puppeteer.launch({
     headless: false,
     ignoreHTTPSErrors: true,
-    slowMo: 40,
+    slowMo: 10,
     args: ['--window-size=800,600', '--disable-gpu', '--disable-features=IsolateOrigins,site-per-process', '--blink-settings=imagesEnabled=true'],
   })
   const page = await browser.newPage()
@@ -24,13 +24,11 @@ async function S2() {
   // Make S2 account
 
   await page.goto('https://155.98.92.189/frameset/')
-  console.log('Logging in...')
   await page.waitForSelector('#username')
   await page.type('#username', process.env.S2_USERNAME)
   await page.type('#password', process.env.S2_PASSWORD)
   await page.keyboard.press('Enter')
-  console.log('login successful')
-  await page.waitForTimeout(6000)
+  await page.waitForTimeout(4000)
 
   // begin loop and initialize variables
   var elementHandle = await page.waitForSelector('#mainFrame')
@@ -43,6 +41,11 @@ async function S2() {
     if (!user['Badge Printed and S2 Set']) {
       // check to see if student to member
       // Student Lab Access
+      await page.goto('https://155.98.92.189/frameset/')
+      await page.waitForTimeout(2000)
+      elementHandle = await page.waitForSelector('#mainFrame')
+      frame = await elementHandle.contentFrame()
+      // check to see if they are already a student in the system
       if (user['Member Type'] === 'Student Lab to New Member') {
         // click admin
         await page.mouse.click(90, 17, { button: 'left' })
@@ -55,7 +58,6 @@ async function S2() {
         await page.waitForTimeout(1000)
         // scroll down
         await page.mouse.wheel({ deltaY: 200 })
-        console.log('scrolling')
         await page.waitForTimeout(1000)
         // click Last Name field
         await page.mouse.click(692, 352 + yOffset, { button: 'left' })
@@ -79,12 +81,7 @@ async function S2() {
         // click confirm
         await page.mouse.click(645, 109 + yOffset, { button: 'left' })
         await page.waitForTimeout(1000)
-        console.log('student deleted')
       }
-      await page.goto('https://155.98.92.189/frameset/')
-      await page.waitForTimeout(2000)
-      elementHandle = await page.waitForSelector('#mainFrame')
-      frame = await elementHandle.contentFrame()
       await frame.waitForSelector('#topbaradmin')
       await frame.click('#topbaradmin')
       await frame.waitForSelector('#PplAdd')
@@ -97,19 +94,16 @@ async function S2() {
       await frame.waitForSelector('#lastname')
       await frame.type('#lastname', user['Last Name'])
       await frame.type('#firstname', user['First Name'])
-      console.log('first name added')
       await frame.waitForSelector('#expirationdate_date')
       await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
       await page.keyboard.press('Enter')
       await page.waitForTimeout(1000)
-      console.log('expiration date added')
       await frame.click('#tab-credentialtab')
       await frame.waitForSelector('#addcredential')
       await frame.click('#addcredential')
       await frame.waitForSelector('#encodednumber0')
       await frame.type('#encodednumber0', user['Prox Code'])
       await frame.click('#tab-accesstab')
-      console.log('access tab clicked')
 
       // New Member/PI access levels
       if (user['Member Type'] === 'New Member' || user['Member Type'] === 'PI') {
@@ -138,22 +132,20 @@ async function S2() {
         await frame.click('#\\37 7 > td:nth-child(3)')
       }
 
-      // Staff Lab Access
-      if (user['Member Type'] === 'Student Lab') {
+      // Staff Lab Access needs work it looks like this is student lab
+      if (user['Member Type'] === 'Staff' || user['Member Type'] === 'Lab Aide') {
         await frame.waitForSelector('#\\36 1 > td:nth-child(3)')
         await frame.click('#\\36 1 > td:nth-child(3)')
         await frame.waitForSelector('#\\37 7 > td:nth-child(3)')
         await frame.click('#\\37 7 > td:nth-child(3)')
       }
-
       await page.waitForTimeout(300)
       await frame.click('#uparrow')
       await page.waitForTimeout(500)
-      console.log('about to click save')
       await page.waitForTimeout(500)
       await frame.click('#save')
       await page.waitForTimeout(3000)
-      console.log('member added successfully')
+      console.log(`${user['First Name']} ${user['Last Name']} S2 account created`)
     }
   }
   await browser.close()

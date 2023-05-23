@@ -3,5 +3,5 @@ const { NewMemberFee } = require('./NewMemberFee')
 
 ;(async () => {
   await S2()
-  await NewMemberFee()
+  // await NewMemberFee()
 })()
