@@ -14,10 +14,11 @@ async function NewMemberFee() {
   const browser = await puppeteer.launch({
     headless: false,
     ignoreHTTPSErrors: true,
-    slowMo: 40,
+    slowMo: 120,
   })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
+  await page.setViewport({ width: 2712, height: 1249 })
 
   await page.goto('https://resource.cores.utah.edu/auth/login')
 
@@ -34,54 +35,48 @@ async function NewMemberFee() {
 
   for (const user of users) {
     if (!user['Badge Printed and S2 Set']) {
-      await page.goto('https://resource.cores.utah.edu/#/group/13')
-      await page.waitForSelector('div > div > div:nth-child(2) > div > .bp4-callout:nth-child(4)')
-      await page.click('div > div > div:nth-child(2) > div > .bp4-callout:nth-child(4)')
-
-      await page.waitForSelector('div > div > div:nth-child(16) > .bp4-button > .bp4-button-text')
-      await page.click('div > div > div:nth-child(16) > .bp4-button > .bp4-button-text')
-
-      await page.waitForSelector('div:nth-child(1) > div > div:nth-child(2) > .bp4-button > .bp4-button-text')
-      await page.click('div:nth-child(1) > div > div:nth-child(2) > .bp4-button > .bp4-button-text')
-
-      await page.waitForSelector('.bp4-collapse > .bp4-collapse-body > div > div > .bp4-callout:nth-child(2)')
-      await page.click('.bp4-collapse > .bp4-collapse-body > div > div > .bp4-callout:nth-child(2)')
-
-      await page.waitForSelector('.bp4-form-group:nth-child(1) > .bp4-form-content > div > .bp4-control-group > .bp4-popover2-target:nth-child(3) > .bp4-button > .bp4-icon > svg > path')
-      await page.click('.bp4-form-group:nth-child(1) > .bp4-form-content > div > .bp4-control-group > .bp4-popover2-target:nth-child(3) > .bp4-button > .bp4-icon > svg > path')
-
-      await page.waitForSelector('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-html-select > select')
-      await page.click('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-html-select > select')
-
-      await page.select('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-html-select > select', 'email')
-
-      await page.waitForSelector('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-html-select > select')
-      await page.click('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-html-select > select')
-
-      await page.waitForSelector('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-input-group > .bp4-input')
-      await page.type('.bp4-popover2-content > .bp4-callout > .bp4-control-group > .bp4-input-group > .bp4-input', user['Email'])
-
-      await page.waitForSelector(
-        'body > div:nth-child(11) > div > div.bp4-popover2-transition-container.bp4-overlay-content.bp4-popover2-enter-done > div > div.bp4-popover2-content > div > div:nth-child(3) > table > tbody > tr:nth-child(2) > td:nth-child(1) > button > span'
-      )
-      await page.click(
-        'body > div:nth-child(11) > div > div.bp4-popover2-transition-container.bp4-overlay-content.bp4-popover2-enter-done > div > div.bp4-popover2-content > div > div:nth-child(3) > table > tbody > tr:nth-child(2) > td:nth-child(1) > button > span'
-      )
-
       try {
+        // Click on Nanofab Cleanroom
+        await page.waitForSelector('div > div > div:nth-child(2) > div > .bp5-callout:nth-child(4)')
+        await page.click('div > div > div:nth-child(2) > div > .bp5-callout:nth-child(4)')
+        // Click on Supplies
+        await page.waitForSelector('div > div:nth-child(16) > .bp5-button > .bp5-icon > svg')
+        await page.click('div > div:nth-child(16) > .bp5-button > .bp5-icon > svg')
+        // Click on Staff Only
+        await page.waitForSelector('div:nth-child(1) > div > div:nth-child(2) > .bp5-button > .bp5-icon-caret-down > svg')
+        await page.click('div:nth-child(1) > div > div:nth-child(2) > .bp5-button > .bp5-icon-caret-down > svg')
+        // Click on Staff Only
+        await page.waitForSelector('.bp5-collapse > .bp5-collapse-body > div > div > .bp5-callout:nth-child(2)')
+        await page.click('.bp5-collapse > .bp5-collapse-body > div > div > .bp5-callout:nth-child(2)')
+        // Navigate to new page and click on User
+        await page.waitForSelector('.bp5-form-group:nth-child(1) > .bp5-form-content > div > .bp5-control-group > .bp5-popover-target:nth-child(3) > .bp5-button > .bp5-icon > svg')
+        await page.click('.bp5-form-group:nth-child(1) > .bp5-form-content > div > .bp5-control-group > .bp5-popover-target:nth-child(3) > .bp5-button > .bp5-icon > svg')
+        // Click on Search by Email
+        await page.waitForSelector('.bp5-popover-content > .bp5-callout > .bp5-control-group > .bp5-html-select > select')
+        await page.click('.bp5-popover-content > .bp5-callout > .bp5-control-group > .bp5-html-select > select')
+        await page.select('.bp5-popover-content > .bp5-callout > .bp5-control-group > .bp5-html-select > select', 'email')
+        // Type user email
         await page.waitForSelector(
-          'body > div:nth-child(12) > div > div.bp4-popover2-transition-container.bp4-overlay-content.bp4-popover2-enter-done > div > div.bp4-popover2-content > div > div:nth-child(2) > table > tbody > tr > td:nth-child(1) > button > span',
-          { timeout: 3000 }
+          'body > div.bp5-portal > div > div.bp5-popover-transition-container.bp5-overlay-content.bp5-popover-appear-done.bp5-popover-enter-done > div > div.bp5-popover-content > div > div:nth-child(2) > div.bp5-input-group.bp5-fill > input'
         )
-        await page.click(
-          'body > div:nth-child(12) > div > div.bp4-popover2-transition-container.bp4-overlay-content.bp4-popover2-enter-done > div > div.bp4-popover2-content > div > div:nth-child(2) > table > tbody > tr > td:nth-child(1) > button > span'
+        await page.type(
+          'body > div.bp5-portal > div > div.bp5-popover-transition-container.bp5-overlay-content.bp5-popover-appear-done.bp5-popover-enter-done > div > div.bp5-popover-content > div > div:nth-child(2) > div.bp5-input-group.bp5-fill > input',
+          user['Email']
         )
-        await page.waitForSelector('div:nth-child(4) > div > div > .bp4-input-group > .bp4-input')
-        await page.type('div:nth-child(4) > div > div > .bp4-input-group > .bp4-input', '1')
 
-        // press submit button
-        // await page.waitForSelector('#content > div:nth-child(2) > div > div > div:nth-child(6) > button.bp4-button.bp4-intent-success')
-        // await page.click('#content > div:nth-child(2) > div > div > div:nth-child(6) > button.bp4-button.bp4-intent-success')
+        // Select email
+        await page.waitForSelector('tbody > tr > td > .bp5-intent-primary > .bp5-button-text')
+        await page.click('tbody > tr > td > .bp5-intent-primary > .bp5-button-text')
+        // Select Charge Account
+        await page.waitForSelector('tbody > tr > td > .bp5-button > .bp5-button-text')
+        await page.click('tbody > tr > td > .bp5-button > .bp5-button-text')
+        // Set New Member Fee to 01
+        await page.waitForSelector('div:nth-child(4) > div > div > .bp5-input-group > .bp5-input')
+        await page.type('div:nth-child(4) > div > div > .bp5-input-group > .bp5-input', '1')
+
+        // Click Submit Button
+        // await page.waitForSelector('#content > div:nth-child(2) > div > div > div:nth-child(6) > button.bp5-button.bp5-intent-success > span')
+        // await page.click('#content > div:nth-child(2) > div > div > div:nth-child(6) > button.bp5-button.bp5-intent-success > span')
 
         console.log(user['First Name'] + ' ' + user['Last Name'] + ' charged successfully')
       } catch (e) {
