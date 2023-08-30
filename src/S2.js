@@ -95,7 +95,11 @@ async function S2() {
       await frame.type('#lastname', user['Last Name'])
       await frame.type('#firstname', user['First Name'])
       await frame.waitForSelector('#expirationdate_date')
-      await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
+      if (user['Member Type'] === 'Student Lab') {
+        await frame.type('#expirationdate_date', `${user['Reading Day']}`, { delay: 100 })
+      } else {
+        await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
+      }
       await page.keyboard.press('Enter')
       await page.waitForTimeout(1000)
       await frame.click('#tab-credentialtab')
