@@ -4,7 +4,7 @@ const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, 'process.env') })
 
 async function NewMemberFee() {
-  const csvFilePath = 'students.csv' // Resource.csv in your case
+  const csvFilePath = 'New Member Signup - Members.csv' // Resource.csv in your case
   const users = await csv()
     .fromFile(csvFilePath)
     .then(jsonObj => {
@@ -14,7 +14,7 @@ async function NewMemberFee() {
   const browser = await puppeteer.launch({
     headless: false,
     ignoreHTTPSErrors: true,
-    slowMo: 40,
+    slowMo: 100,
   })
   const page = await browser.newPage()
   const navigationPromise = page.waitForNavigation()
@@ -84,11 +84,14 @@ async function NewMemberFee() {
         // await page.click('#content > div:nth-child(2) > div > div > div:nth-child(6) > button.bp4-button.bp4-intent-success')
 
         console.log(user['First Name'] + ' ' + user['Last Name'] + ' charged successfully')
+        await page.waitForTimeout(4000)
       } catch (e) {
         console.log(user['First Name'] + ' ' + user['Last Name'] + ' failed to find an account')
+        await page.waitForTimeout(4000)
       }
     }
   }
+
   await browser.close()
 }
 

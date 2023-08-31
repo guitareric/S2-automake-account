@@ -4,7 +4,7 @@ const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, 'process.env') })
 
 async function S2() {
-  const csvFilePath = 'students.csv' // Resource.csv in your case
+  const csvFilePath = 'New Member Signup - Members.csv' // Resource.csv in your case
   const users = await csv()
     .fromFile(csvFilePath)
     .then(jsonObj => {
@@ -14,7 +14,7 @@ async function S2() {
   const browser = await puppeteer.launch({
     headless: false,
     ignoreHTTPSErrors: true,
-    slowMo: 10,
+    slowMo: 30,
     args: ['--window-size=800,600', '--disable-gpu', '--disable-features=IsolateOrigins,site-per-process', '--blink-settings=imagesEnabled=true'],
   })
   const page = await browser.newPage()
@@ -95,7 +95,11 @@ async function S2() {
       await frame.type('#lastname', user['Last Name'])
       await frame.type('#firstname', user['First Name'])
       await frame.waitForSelector('#expirationdate_date')
-      await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
+      if (user['Member Type'] === 'Student Lab') {
+        await frame.type('#expirationdate_date', `${user['Reading Day']} 00:00`, { delay: 100 })
+      } else {
+        await frame.type('#expirationdate_date', '10/01/2024 00:00', { delay: 100 })
+      }
       await page.keyboard.press('Enter')
       await page.waitForTimeout(1000)
       await frame.click('#tab-credentialtab')
