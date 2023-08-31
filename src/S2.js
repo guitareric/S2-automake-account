@@ -96,9 +96,9 @@ async function S2() {
       await frame.type('#firstname', user['First Name'])
       await frame.waitForSelector('#expirationdate_date')
       if (user['Member Type'] === 'Student Lab') {
-        await frame.type('#expirationdate_date', `${user['Reading Day']} 00:00`, { delay: 100 })
+        await frame.type('#expirationdate_date', `${user['Reading Day']}`, { delay: 100 })
       } else {
-        await frame.type('#expirationdate_date', '10/01/2024 00:00', { delay: 100 })
+        await frame.type('#expirationdate_date', '10/1/2024 00:00', { delay: 100 })
       }
       await page.keyboard.press('Enter')
       await page.waitForTimeout(1000)
